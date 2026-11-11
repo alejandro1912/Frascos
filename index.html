@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Transferencia de tablones</title>
+<title>Traslado a control y paletizado</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -84,123 +84,124 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);paddin
 .jar{fill:var(--glass);stroke:var(--fg);stroke-width:1.6} .lidm{fill:var(--steel);stroke:var(--fg);stroke-width:1.2}
 .jarg{fill:none;stroke:var(--muted);stroke-width:1.6;stroke-dasharray:5 4} .sensi{fill:var(--ind);stroke:var(--fg);stroke-width:1}
 .next{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4} .spring{stroke:var(--fg);stroke-width:1.3;fill:none}
-.roller{stroke:var(--steel);stroke-width:5} .wood{fill:var(--piece);stroke:var(--fg);stroke-width:1.2} .ramg{fill:none;stroke:var(--fg);stroke-width:1.5;stroke-dasharray:4 3} .tag2{font:600 13px var(--f-mono)}
+.box{fill:#c9a26b;stroke:var(--fg);stroke-width:1.4} .strap{stroke:var(--steel);stroke-width:5} .boxg{fill:none;stroke:var(--muted);stroke-width:1.6;stroke-dasharray:5 4} .strapg{stroke:var(--muted);stroke-width:3;stroke-dasharray:4 3}
+.table{fill:var(--sheet);stroke:var(--fg);stroke-width:1.6} .pallet{stroke:var(--steel);stroke-width:6} .tag2{font:600 13px var(--f-mono)}
 .micro{font:600 9px var(--f-mono)}
 </style>
 
 <div class="wrap">
 <header>
   <div class="eyebrow">Electroneumática · Práctica de montaje en maleta didáctica</div>
-  <h1>Transferencia de tablones con dos empujadores</h1>
-  <p class="lead">Dos cilindros de simple efecto empujan juntos un tablón de madera desde una cinta de rodillos a la mesa de corte. Una válvula 5/2 biestable los gobierna; un sensor capacitivo y uno inductivo energizan directamente sus solenoides, y un final de carrera con un relé en retención habilita el sistema.</p>
-  <div class="meta"><span class="chip">1 válvula 5/2 biestable</span><span class="chip">2 cilindros de simple efecto</span><span class="chip">1 relé</span><span class="chip">Sensores directos a solenoides</span><span class="chip">Mando 24 V DC</span></div>
+  <h1>Traslado de cajas a control y paletizado</h1>
+  <p class="lead">El cilindro A saca la caja de la cinta y la deja en la mesa de control; el cilindro B la envía desde la mesa al paletizado. Cada uno lo activa su propio sensor, y una sola válvula 5/2 biestable los mueve en sentidos opuestos.</p>
+  <div class="meta"><span class="chip">1 válvula 5/2 biestable</span><span class="chip">2 cilindros de simple efecto</span><span class="chip">1 relé</span><span class="chip">B1 → A · B2 → B</span><span class="chip">Mando 24 V DC</span></div>
 </header>
 
 <section>
   <h2><span class="n">01</span>Planteamiento del problema</h2>
   <div class="statement">
-    <p>Un taller de muebles recibe tablones de madera por una cinta de rodillos. Cada tablón debe pasar a una mesa de corte ubicada al costado de la cinta. Como el tablón es largo, se empuja con <b>dos cilindros al mismo tiempo</b>, uno en cada extremo, para que avance derecho y no gire. Se pide diseñar el mando electroneumático con los elementos disponibles en la maleta: un relé, un sensor capacitivo, un sensor inductivo y un final de carrera.</p>
+    <p>Una bodega despacha cajas de cartón cerradas con un fleje metálico. Antes de paletizarlas, cada caja debe pasar por una mesa de control, donde se verifica que lleve el fleje. Se pide automatizar el traslado con dos cilindros neumáticos, usando los elementos de la maleta: un relé, un final de carrera, un sensor capacitivo y un sensor inductivo.</p>
     <ol class="steps">
-      <li>El operador acciona con la mano el final de carrera <b>S1</b>, que se usa como pulsador de partida. El relé <b>K1</b> se energiza y queda en retención: el sistema está habilitado.</li>
-      <li>Un tablón avanza por la cinta hasta detenerse contra el tope fijo. El sensor capacitivo <b>B1</b> detecta la madera y energiza directamente el solenoide <b>Y1</b>.</li>
-      <li>La válvula cambia de posición y los cilindros <b>A</b> y <b>B</b> avanzan juntos, empujando el tablón hacia la mesa de corte.</li>
-      <li>Al final de su carrera, la placa de acero del empujador de A queda frente al sensor inductivo <b>B2</b>, que energiza directamente el solenoide <b>Y2</b>.</li>
-      <li>La válvula vuelve a su posición inicial y ambos cilindros retroceden por su resorte. La estación queda lista para el siguiente tablón.</li>
+      <li>El operador acciona con la mano el final de carrera <b>S1</b>, que se usa como pulsador de partida. El relé <b>K1</b> queda en retención y habilita los sensores.</li>
+      <li>Una caja avanza por la cinta hasta el tope fijo. El sensor capacitivo <b>B1</b> detecta el cartón y energiza directamente <b>Y1</b>.</li>
+      <li><b>A avanza</b> y empuja la caja desde la cinta hasta la mesa de control. Al mismo tiempo, B retrocede por su resorte y deja la mesa libre.</li>
+      <li>En la mesa, el sensor inductivo <b>B2</b> detecta el fleje metálico de la caja y energiza directamente <b>Y2</b>.</li>
+      <li><b>B avanza</b> y empuja la caja desde la mesa hasta la zona de paletizado. Al mismo tiempo, A retrocede por su resorte y la cinta queda libre para la siguiente caja.</li>
+      <li>La siguiente caja llega al tope y el ciclo se repite.</li>
     </ol>
-    <p><b>Condiciones:</b> el mando usa un solo relé. Los sensores no pasan por relés auxiliares: cada uno energiza su solenoide a través de un contacto de K1, de modo que sin K1 retenido no hay movimiento. Los dos cilindros se conectan a la vía 4 de la válvula y la vía 2 queda tapada. La velocidad de ambos cilindros debe poder regularse para que avancen parejos.</p>
+    <p><b>Condiciones:</b> el mando usa un solo relé. Cada sensor energiza su solenoide directamente, a través de un contacto de K1. El cilindro A se conecta a la vía 4 y el cilindro B a la vía 2 de la misma válvula, así que cuando uno avanza el otro retrocede. La velocidad de avance de ambos cilindros debe poder regularse.</p>
   </div>
 </section>
 
 <section>
   <h2><span class="n">02</span>Imagen representativa</h2>
   <div class="sheet">
-    <svg viewBox="0 0 820 400" class="dg" role="img" aria-label="Vista superior: tablón de madera sobre una cinta de rodillos contra un tope fijo, dos cilindros A y B lo empujan a la mesa de corte; sensor capacitivo B1 junto al tope y sensor inductivo B2 al final de carrera de A">
+    <svg viewBox="0 90 820 340" class="dg" role="img" aria-label="Vista superior: cinta con cajas hasta un tope fijo; cilindro A bajo la cinta empuja la caja a la mesa de control; cilindro B al costado de la mesa la envía a la zona de paletizado; sensor capacitivo B1 en el tope y sensor inductivo B2 sobre la mesa">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="ahead"/></marker></defs>
-<rect x="60" y="24" width="700" height="92" class="next"/><text x="410" y="62" class="small" text-anchor="middle">Mesa de corte</text>
-<rect x="40" y="140" width="740" height="90" class="belt"/>
-<line x1="60" y1="142" x2="60" y2="228" class="roller"/>
-<line x1="96" y1="142" x2="96" y2="228" class="roller"/>
-<line x1="132" y1="142" x2="132" y2="228" class="roller"/>
-<line x1="168" y1="142" x2="168" y2="228" class="roller"/>
-<line x1="204" y1="142" x2="204" y2="228" class="roller"/>
-<line x1="240" y1="142" x2="240" y2="228" class="roller"/>
-<line x1="276" y1="142" x2="276" y2="228" class="roller"/>
-<line x1="312" y1="142" x2="312" y2="228" class="roller"/>
-<line x1="348" y1="142" x2="348" y2="228" class="roller"/>
-<line x1="384" y1="142" x2="384" y2="228" class="roller"/>
-<line x1="420" y1="142" x2="420" y2="228" class="roller"/>
-<line x1="456" y1="142" x2="456" y2="228" class="roller"/>
-<line x1="492" y1="142" x2="492" y2="228" class="roller"/>
-<line x1="528" y1="142" x2="528" y2="228" class="roller"/>
-<line x1="564" y1="142" x2="564" y2="228" class="roller"/>
-<line x1="600" y1="142" x2="600" y2="228" class="roller"/>
-<line x1="636" y1="142" x2="636" y2="228" class="roller"/>
-<line x1="672" y1="142" x2="672" y2="228" class="roller"/>
-<line x1="708" y1="142" x2="708" y2="228" class="roller"/>
-<line x1="744" y1="142" x2="744" y2="228" class="roller"/>
-<line x1="40" y1="140" x2="780" y2="140" class="guide"/><line x1="40" y1="230" x2="780" y2="230" class="guide"/>
-<rect x="200" y="164" width="440" height="42" class="wood"/><text x="420" y="190" class="lbl" text-anchor="middle">Tablón de madera</text>
-<rect x="640" y="150" width="14" height="70" class="ram"/><text x="690" y="214" class="small" text-anchor="middle">Tope fijo</text>
-<path d="M60 380 H220" class="arrowln" marker-end="url(#ah)"/><text x="140" y="372" class="small" text-anchor="middle">avance</text>
-<rect x="260" y="272" width="40" height="80" class="cyl"/><line x1="280" y1="272" x2="280" y2="244" class="rod"/><rect x="245" y="236" width="70" height="8" class="ram"/>
-<text x="310" y="306" class="tag" text-anchor="start">A</text>
-<path d="M280 158 V96" class="arrowln dash" marker-end="url(#ah)"/>
-<rect x="540" y="272" width="40" height="80" class="cyl"/><line x1="560" y1="272" x2="560" y2="244" class="rod"/><rect x="525" y="236" width="70" height="8" class="ram"/>
-<text x="590" y="306" class="tag" text-anchor="start">B</text>
-<path d="M560 158 V96" class="arrowln dash" marker-end="url(#ah)"/>
-<text x="310" y="324" class="small" text-anchor="start">Empujador</text><text x="590" y="324" class="small" text-anchor="start">Empujador</text>
-<rect x="596" y="124" width="22" height="14" class="sens"/><path d="M607 138 V162" class="beam"/><text x="626" y="134" class="tag2" text-anchor="start">B1 capacitivo</text>
-<rect x="200" y="90" width="22" height="14" class="sensi"/><path d="M222 97 H244" class="beam"/><text x="196" y="101" class="tag2" text-anchor="end">B2 inductivo</text>
-<rect x="245" y="92" width="70" height="10" class="ramg"/><text x="280" y="86" class="small" text-anchor="middle">fin de carrera de A</text>
+<rect x="430" y="110" width="190" height="150" class="table"/><text x="480" y="128" class="small" text-anchor="middle">Mesa de control</text>
+<rect x="650" y="110" width="140" height="150" class="next"/>
+<line x1="662" y1="130" x2="778" y2="130" class="pallet"/>
+<line x1="662" y1="160" x2="778" y2="160" class="pallet"/>
+<line x1="662" y1="190" x2="778" y2="190" class="pallet"/>
+<line x1="662" y1="220" x2="778" y2="220" class="pallet"/>
+<line x1="662" y1="250" x2="778" y2="250" class="pallet"/>
+<text x="720" y="278" class="small" text-anchor="middle">Paletizado</text>
+<rect x="40" y="282" width="530" height="66" class="belt"/>
+<line x1="40" y1="280" x2="570" y2="280" class="guide"/><line x1="40" y1="350" x2="570" y2="350" class="guide"/>
+<line x1="70" y1="284" x2="70" y2="346" class="slat"/>
+<line x1="120" y1="284" x2="120" y2="346" class="slat"/>
+<line x1="170" y1="284" x2="170" y2="346" class="slat"/>
+<line x1="220" y1="284" x2="220" y2="346" class="slat"/>
+<line x1="270" y1="284" x2="270" y2="346" class="slat"/>
+<line x1="320" y1="284" x2="320" y2="346" class="slat"/>
+<line x1="370" y1="284" x2="370" y2="346" class="slat"/>
+<line x1="420" y1="284" x2="420" y2="346" class="slat"/>
+<line x1="470" y1="284" x2="470" y2="346" class="slat"/>
+<line x1="520" y1="284" x2="520" y2="346" class="slat"/>
+<rect x="570" y="284" width="12" height="62" class="ram"/>
+<rect x="346" y="288" width="66" height="54" class="box"/><line x1="379" y1="288" x2="379" y2="342" class="strap"/>
+<rect x="418" y="288" width="66" height="54" class="box"/><line x1="451" y1="288" x2="451" y2="342" class="strap"/>
+<rect x="490" y="288" width="66" height="54" class="box"/><line x1="523" y1="288" x2="523" y2="342" class="strap"/>
+<path d="M80 410 H240" class="arrowln" marker-end="url(#ah)"/><text x="160" y="402" class="small" text-anchor="middle">avance de la cinta</text>
+<rect x="596" y="300" width="24" height="16" class="sens"/><path d="M596 308 H582" class="beam"/><text x="628" y="312" class="tag2" text-anchor="start">B1 capacitivo</text>
+<rect x="503" y="366" width="40" height="52" class="cyl"/><line x1="523" y1="366" x2="523" y2="358" class="rod"/><rect x="491" y="352" width="64" height="7" class="ram"/>
+<text x="553" y="398" class="tag" text-anchor="start">A</text><text x="553" y="414" class="small" text-anchor="start">lleva la caja a la mesa</text>
+<path d="M523 276 V218" class="arrowln dash" marker-end="url(#ah)"/>
+<rect x="490" y="150" width="66" height="54" class="boxg"/><line x1="523" y1="150" x2="523" y2="204" class="strapg"/>
+<rect x="566" y="128" width="24" height="16" class="sensi"/><path d="M572 144 L560 152" class="beam"/><text x="596" y="141" class="tag2" text-anchor="start">B2</text><text x="566" y="160" class="small" text-anchor="start">inductivo</text>
+<rect x="320" y="162" width="90" height="36" class="cyl"/><line x1="410" y1="180" x2="606" y2="180" class="rod"/><rect x="606" y="164" width="8" height="32" class="ram"/>
+<text x="365" y="154" class="tag" text-anchor="middle">B</text><text x="365" y="216" class="small" text-anchor="middle">envía la caja al paletizado</text>
+<path d="M572 236 H642" class="arrowln dash" marker-end="url(#ah)"/>
 </svg>
-    <div class="rotulo"><span>Vista superior · sin escala · posición inicial</span><span>Lámina 1/4</span></div>
+    <div class="rotulo"><span>Vista superior · sin escala · posición inicial: A retraído, B extendido</span><span>Lámina 1/4</span></div>
   </div>
-  <div class="legend"><span><i class="sw" style="border-color:var(--elec)"></i>Sensor capacitivo B1</span><span><i class="sw" style="border-color:var(--ind)"></i>Sensor inductivo B2</span><span><i class="sw" style="border-color:var(--muted);border-top-style:dashed"></i>Recorrido del tablón y posición final del empujador</span></div>
-  <p style="margin-top:12px">B1 es capacitivo porque detecta la <b>madera</b>, que un sensor inductivo no ve. B2 es inductivo porque detecta la <b>placa de acero</b> del empujador y no reacciona ante el tablón. Así cada sensor responde solo a lo que le corresponde.</p>
+  <div class="legend"><span><i class="sw" style="border-color:var(--elec)"></i>Sensor capacitivo B1</span><span><i class="sw" style="border-color:var(--ind)"></i>Sensor inductivo B2</span><span><i class="sw" style="border-color:var(--steel)"></i>Fleje metálico</span><span><i class="sw" style="border-color:var(--muted);border-top-style:dashed"></i>Recorrido de la caja</span></div>
+  <p style="margin-top:12px">B1 es capacitivo porque detecta el <b>cartón</b> de la caja en el tope. B2 es inductivo porque detecta el <b>fleje de acero</b>: así confirma que la caja que llegó a la mesa está cerrada correctamente antes de enviarla al paletizado.</p>
 </section>
 
 <section>
   <h2><span class="n">03</span>Secuencia y diagrama espacio-fase</h2>
   <div class="tbl"><table>
-    <thead><tr><th>Paso</th><th>Solenoide</th><th>Movimiento</th><th>Lo activa</th><th>Termina cuando</th></tr></thead>
+    <thead><tr><th>Paso</th><th>Sensor → solenoide</th><th>Movimiento</th><th>Termina cuando</th></tr></thead>
     <tbody>
-      <tr><td class="m">0</td><td class="m">—</td><td>Reposo: A y B retraídos</td><td>Válvula en posición 12, vía 4 a escape</td><td>S1 habilita el sistema (K1 retenido)</td></tr>
-      <tr><td class="m">1</td><td class="m">Y1</td><td>A+ y B+ empujan el tablón a la mesa</td><td>K1 · B1</td><td>El empujador de A llega a B2</td></tr>
-      <tr><td class="m">2</td><td class="m">Y2</td><td>A− y B− vuelven por el resorte</td><td>K1 · B2</td><td>Ambos retraídos; espera el siguiente tablón</td></tr>
+      <tr><td class="m">0</td><td class="m">—</td><td>Reposo: A retraído, B extendido (válvula en 12)</td><td>S1 habilita el sistema (K1 retenido)</td></tr>
+      <tr><td class="m">1</td><td class="m">B1 → Y1</td><td><b>A+</b> lleva la caja a la mesa · B− deja la mesa libre</td><td>A extendido y B retraído</td></tr>
+      <tr><td class="m">2</td><td class="m">—</td><td>La caja queda en la mesa de control</td><td>B2 detecta el fleje</td></tr>
+      <tr><td class="m">3</td><td class="m">B2 → Y2</td><td><b>B+</b> envía la caja al paletizado · A− libera la cinta</td><td>Llega la siguiente caja al tope y se vuelve al paso 1</td></tr>
     </tbody>
   </table></div>
   <div class="sheet" style="margin-top:16px">
-    <svg viewBox="0 0 820 290" class="dg" role="img" aria-label="Diagrama espacio-fase: A y B avanzan juntos con Y1 y retroceden juntos con Y2">
-<line x1="200" y1="30" x2="200" y2="230" class="grid"/><text x="200" y="22" class="pt" text-anchor="middle">1</text>
-<line x1="440" y1="30" x2="440" y2="230" class="grid"/><text x="440" y="22" class="pt" text-anchor="middle">2</text>
-<line x1="680" y1="30" x2="680" y2="230" class="grid"/><text x="680" y="22" class="pt" text-anchor="middle">3 = 1</text>
+    <svg viewBox="0 0 820 300" class="dg" role="img" aria-label="Diagrama espacio-fase: con Y1 A avanza y B retrocede a la vez; esperan hasta que B2 detecta el frasco; con Y2 A retrocede y B avanza a la vez">
+<line x1="170" y1="30" x2="170" y2="230" class="grid"/><text x="170" y="22" class="pt" text-anchor="middle">1</text>
+<line x1="340" y1="30" x2="340" y2="230" class="grid"/><text x="340" y="22" class="pt" text-anchor="middle">2</text>
+<line x1="510" y1="30" x2="510" y2="230" class="grid"/><text x="510" y="22" class="pt" text-anchor="middle">3</text>
+<line x1="680" y1="30" x2="680" y2="230" class="grid"/><text x="680" y="22" class="pt" text-anchor="middle">4 = 1</text>
 <text x="30" y="96" class="tag" text-anchor="start">A</text>
-<line x1="200" y1="60" x2="680" y2="60" class="grid"/><line x1="200" y1="110" x2="680" y2="110" class="grid"/>
-<path d="M200 110 L440 60 L680 110" class="trace"/>
-<text x="188" y="64" class="pt" text-anchor="end">1</text><text x="188" y="114" class="pt" text-anchor="end">0</text>
+<line x1="170" y1="60" x2="680" y2="60" class="grid"/><line x1="170" y1="110" x2="680" y2="110" class="grid"/>
+<path d="M170 110 L340 60 L510 60 L680 110" class="trace"/>
+<text x="158" y="64" class="pt" text-anchor="end">1</text><text x="158" y="114" class="pt" text-anchor="end">0</text>
 <text x="30" y="196" class="tag" text-anchor="start">B</text>
-<line x1="200" y1="160" x2="680" y2="160" class="grid"/><line x1="200" y1="210" x2="680" y2="210" class="grid"/>
-<path d="M200 210 L440 160 L680 210" class="trace"/>
-<text x="188" y="164" class="pt" text-anchor="end">1</text><text x="188" y="214" class="pt" text-anchor="end">0</text>
-<text x="208" y="128" class="sig" text-anchor="start">K1 · B1 → Y1</text><text x="448" y="128" class="sig" text-anchor="start">K1 · B2 → Y2</text>
-<text x="320.0" y="262" class="small" text-anchor="middle">A+ y B+ empujan el tablón</text><text x="560.0" y="262" class="small" text-anchor="middle">A− y B− vuelven por el resorte</text>
+<line x1="170" y1="160" x2="680" y2="160" class="grid"/><line x1="170" y1="210" x2="680" y2="210" class="grid"/>
+<path d="M170 160 L340 210 L510 210 L680 160" class="trace"/>
+<text x="158" y="164" class="pt" text-anchor="end">1</text><text x="158" y="214" class="pt" text-anchor="end">0</text>
+<text x="178" y="128" class="sig" text-anchor="start">K1 · B1 → Y1</text>
+<text x="518" y="128" class="sig" text-anchor="start">K1 · B2 → Y2</text>
+<text x="255.0" y="262" class="small" text-anchor="middle">A lleva la caja · B vuelve</text><text x="425.0" y="262" class="small" text-anchor="middle">la caja llega a la mesa</text><text x="595.0" y="262" class="small" text-anchor="middle">B envía al paletizado · A vuelve</text>
 </svg>
     <div class="rotulo"><span>1 = vástago extendido · 0 = retraído · señales de paso en rojo</span><span>Lámina 2/4</span></div>
   </div>
-  <p style="margin-top:12px">La válvula biestable es la memoria del sistema: B1 y B2 entregan señales breves, y la válvula conserva la última orden. Por eso no se necesitan más relés.</p>
+  <p style="margin-top:12px">Como A y B comparten la válvula, cuando un sensor hace avanzar su cilindro el otro vuelve por su resorte. La válvula biestable recuerda la última orden, así que basta un pulso de cada sensor.</p>
 </section>
 
 <section>
   <h2><span class="n">04</span>Diagrama neumático</h2>
   <div class="sheet">
-    <svg viewBox="0 0 900 520" class="dg" role="img" aria-label="Circuito neumático: una válvula 5/2 biestable alimenta por la vía 4 a los cilindros A y B en paralelo; la vía 2 está tapada">
+    <svg viewBox="0 0 900 520" class="dg" role="img" aria-label="Circuito neumático: una válvula 5/2 biestable alimenta por la vía 4 al cilindro A y por la vía 2 al cilindro B, ambos de simple efecto con retorno por muelle">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="ahead"/></marker></defs>
-<rect x="80" y="60" width="160" height="40" class="symf"/><line x1="114" y1="60" x2="114" y2="100" class="symw"/><line x1="114" y1="80" x2="304" y2="80" class="symw"/><path d="M118 80 L125.4 66 L140.1 94 L154.9 66 L169.6 94 L184.4 66 L199.1 94 L213.9 66 L228.6 94 L236 80" class="spring"/><line x1="230" y1="60" x2="230" y2="52" class="sym"/><text x="140" y="48" class="tag" text-anchor="middle">A</text><text x="160" y="122" class="small" text-anchor="middle">Empujador izquierdo</text>
-<rect x="500" y="60" width="160" height="40" class="symf"/><line x1="534" y1="60" x2="534" y2="100" class="symw"/><line x1="534" y1="80" x2="724" y2="80" class="symw"/><path d="M538 80 L545.4 66 L560.1 94 L574.9 66 L589.6 94 L604.4 66 L619.1 94 L633.9 66 L648.6 94 L656 80" class="spring"/><line x1="650" y1="60" x2="650" y2="52" class="sym"/><text x="560" y="48" class="tag" text-anchor="middle">B</text><text x="580" y="122" class="small" text-anchor="middle">Empujador derecho</text>
-<path d="M95 100 V158" class="pn"/><rect x="75" y="158" width="40" height="44" class="dashbox"/><line x1="95" y1="158" x2="95" y2="202" class="pn"/><path d="M88 170 Q94 180 88 190" class="sym"/><path d="M102 170 Q96 180 102 190" class="sym"/><path d="M84 192 L106 168" class="sym" marker-end="url(#ah)"/><path d="M95 162 h14 v36 h-14" class="pnt"/><circle cx="109" cy="182" r="4" class="symf"/><path d="M104 174 L109 178 L114 174" class="sym"/><text x="69" y="184" class="des" text-anchor="end">VR1</text><path d="M95 202 V250 H515 V202" class="pn"/>
-<path d="M515 100 V158" class="pn"/><rect x="495" y="158" width="40" height="44" class="dashbox"/><line x1="515" y1="158" x2="515" y2="202" class="pn"/><path d="M508 170 Q514 180 508 190" class="sym"/><path d="M522 170 Q516 180 522 190" class="sym"/><path d="M504 192 L526 168" class="sym" marker-end="url(#ah)"/><path d="M515 162 h14 v36 h-14" class="pnt"/><circle cx="529" cy="182" r="4" class="symf"/><path d="M524 174 L529 178 L534 174" class="sym"/><text x="489" y="184" class="des" text-anchor="end">VR2</text>
-<path d="M415 250 V300" class="pn"/><circle cx="415" cy="250" r="3.5" class="node"/>
-<line x1="445" y1="300" x2="445" y2="284" class="pn"/><rect x="438" y="278" width="14" height="6" class="exh"/><text x="457" y="286" class="pt" text-anchor="start">vía 2 tapada</text>
+<rect x="80" y="60" width="160" height="40" class="symf"/><line x1="114" y1="60" x2="114" y2="100" class="symw"/><line x1="114" y1="80" x2="304" y2="80" class="symw"/><path d="M118 80 L125.4 66 L140.1 94 L154.9 66 L169.6 94 L184.4 66 L199.1 94 L213.9 66 L228.6 94 L236 80" class="spring"/><line x1="230" y1="60" x2="230" y2="52" class="sym"/><text x="140" y="48" class="tag" text-anchor="middle">A</text><text x="160" y="122" class="small" text-anchor="middle">Empujador a la mesa · vía 4</text>
+<rect x="500" y="60" width="160" height="40" class="symf"/><line x1="628" y1="60" x2="628" y2="100" class="symw"/><line x1="628" y1="80" x2="818" y2="80" class="symw"/><path d="M632 80 L633.5 66 L636.5 94 L639.5 66 L642.5 94 L645.5 66 L648.5 94 L651.5 66 L654.5 94 L656 80" class="spring"/><line x1="650" y1="60" x2="650" y2="52" class="sym"/><text x="560" y="48" class="tag" text-anchor="middle">B</text><text x="580" y="122" class="small" text-anchor="middle">Empujador al paletizado · vía 2</text>
+<path d="M95 100 V158" class="pn"/><rect x="75" y="158" width="40" height="44" class="dashbox"/><line x1="95" y1="158" x2="95" y2="202" class="pn"/><path d="M88 170 Q94 180 88 190" class="sym"/><path d="M102 170 Q96 180 102 190" class="sym"/><path d="M84 192 L106 168" class="sym" marker-end="url(#ah)"/><path d="M95 162 h14 v36 h-14" class="pnt"/><circle cx="109" cy="182" r="4" class="symf"/><path d="M104 174 L109 178 L114 174" class="sym"/><text x="69" y="184" class="des" text-anchor="end">VR1</text><path d="M95 202 V250 H415 V300" class="pn"/>
+<path d="M515 100 V158" class="pn"/><rect x="495" y="158" width="40" height="44" class="dashbox"/><line x1="515" y1="158" x2="515" y2="202" class="pn"/><path d="M508 170 Q514 180 508 190" class="sym"/><path d="M522 170 Q516 180 522 190" class="sym"/><path d="M504 192 L526 168" class="sym" marker-end="url(#ah)"/><path d="M515 162 h14 v36 h-14" class="pnt"/><circle cx="529" cy="182" r="4" class="symf"/><path d="M524 174 L529 178 L534 174" class="sym"/><text x="489" y="184" class="des" text-anchor="end">VR2</text><path d="M515 202 V250 H445 V300" class="pn"/>
 <rect x="340" y="300" width="60" height="50" class="symf"/><rect x="400" y="300" width="60" height="50" class="symf"/><path d="M370 350 L355 304" class="sym" marker-end="url(#ah)"/><path d="M385 300 L390 346" class="sym" marker-end="url(#ah)"/><path d="M350 350 v-10 M344 340 h12" class="sym"/><path d="M430 350 L445 304" class="sym" marker-end="url(#ah)"/><path d="M415 300 L410 346" class="sym" marker-end="url(#ah)"/><path d="M450 350 v-10 M444 340 h12" class="sym"/><line x1="410" y1="350" x2="410" y2="358" class="pn"/><path d="M404 358 h12 l-6 9z" class="exh"/><line x1="450" y1="350" x2="450" y2="358" class="pn"/><path d="M444 358 h12 l-6 9z" class="exh"/><rect x="314" y="312" width="26" height="26" class="symf"/><line x1="314" y1="338" x2="340" y2="312" class="sym"/><text x="308" y="330" class="des elt" text-anchor="end">Y1</text><rect x="460" y="312" width="26" height="26" class="symf"/><line x1="460" y1="338" x2="486" y2="312" class="sym"/><text x="492" y="330" class="des elt" text-anchor="start">Y2</text><text x="400" y="392" class="des" text-anchor="middle">V1 · 5/2 biestable</text><text x="409" y="296" class="pt" text-anchor="middle">4</text><text x="451" y="296" class="pt" text-anchor="middle">2</text><text x="430" y="364" class="pt" text-anchor="middle">1</text><text x="403" y="364" class="pt" text-anchor="middle">5</text><text x="457" y="364" class="pt" text-anchor="middle">3</text>
 <path d="M430 350 V440 H150" class="pn"/>
 <circle cx="40" cy="440" r="18" class="symf"/><path d="M40 425 l-9 13 h18z" class="exh"/><text x="40" y="478" class="des" text-anchor="middle">0Z1</text>
@@ -208,20 +209,19 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);paddin
 <path d="M104 440 H114" class="pn"/><rect x="114" y="418" width="36" height="44" class="dashbox"/><path d="M132 424 l12 16 l-12 16 l-12 -16z" class="symf"/><line x1="132" y1="424" x2="132" y2="456" class="dashsym"/>
 <circle cx="132" cy="405" r="9" class="symf"/><line x1="132" y1="405" x2="137" y2="399" class="sym"/><line x1="132" y1="414" x2="132" y2="418" class="sym"/><text x="132" y="478" class="des" text-anchor="middle">0Z2</text><text x="132" y="494" class="small" text-anchor="middle">6 bar</text>
 </svg>
-    <div class="rotulo"><span>Posición inicial: válvula en 12, A y B retraídos</span><span>Lámina 3/4</span></div>
+    <div class="rotulo"><span>Posición inicial: válvula en 12, A retraído, B extendido</span><span>Lámina 3/4</span></div>
   </div>
   <div class="grid2" style="margin-top:16px">
     <div class="card"><h3>Cómo se conecta</h3><ul>
       <li>Vía <b>1</b>: alimentación desde la unidad de mantenimiento.</li>
-      <li>Vía <b>4</b> → distribuidor en T → VR1 hacia <b>A</b> y VR2 hacia <b>B</b>.</li>
-      <li>Vía <b>2</b>: tapada con un tapón.</li>
+      <li>Vía <b>4</b> → VR1 → cilindro <b>A</b> (de la cinta a la mesa).</li>
+      <li>Vía <b>2</b> → VR2 → cilindro <b>B</b> (de la mesa al paletizado).</li>
       <li>Vías <b>3</b> y <b>5</b>: escapes con silenciador.</li>
     </ul></div>
     <div class="card"><h3>Por qué funciona</h3><ul>
-      <li>Con <b>Y1</b>, la válvula conecta 1→4: los dos cilindros reciben aire y avanzan juntos.</li>
-      <li>Con <b>Y2</b>, conecta 4→5: los cilindros descargan y vuelven por su resorte.</li>
-      <li>Al ser biestable, conserva la posición aunque el sensor deje de detectar.</li>
-      <li>VR1 y VR2 regulan la entrada de aire de cada cilindro para igualar sus velocidades.</li>
+      <li><b>Y1</b> conecta 1→4 y 2→3: A recibe aire y avanza; B descarga y vuelve por el resorte.</li>
+      <li><b>Y2</b> conecta 1→2 y 4→5: B recibe aire y avanza; A descarga y vuelve por el resorte.</li>
+      <li>B queda extendido mientras se espera la siguiente caja; la mesa está vacía, así que no estorba.</li>
     </ul></div>
   </div>
 </section>
@@ -246,11 +246,11 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);paddin
   </div>
   <h3 style="margin-top:20px">Ecuaciones lógicas</h3>
   <div class="eq"><b>K1</b> = S1 + K1          final de carrera con relé en retención
-<b>Y1</b> = K1 · B1          el sensor capacitivo energiza el avance
-<b>Y2</b> = K1 · B2          el sensor inductivo energiza el retroceso</div>
+<b>Y1</b> = K1 · B1          el sensor capacitivo hace avanzar A
+<b>Y2</b> = K1 · B2          el sensor inductivo hace avanzar B</div>
   <div class="grid2" style="margin-top:16px">
-    <div class="card"><h3>Retención con un solo relé</h3><p>Al accionar S1, K1 se energiza y su contacto NA de la línea 2 lo mantiene activo cuando se suelta el final de carrera. El segundo contacto NA de K1, en la línea 3, alimenta a los dos sensores: con K1 desactivado, B1 y B2 no pueden energizar los solenoides.</p></div>
-    <div class="card"><h3>Sensores conectados directo</h3><p>Cada sensor PNP recibe +24 V a través de K1, y su salida va directo a la bobina: B1 a Y1 y B2 a Y2. El relé necesita al menos <b>dos contactos NA</b>: uno para la retención y otro para habilitar los sensores.</p></div>
+    <div class="card"><h3>Retención con un solo relé</h3><p>Al accionar S1, K1 se energiza y su contacto NA de la línea 2 lo mantiene activo cuando se suelta el final de carrera. El segundo contacto NA, en la línea 3, alimenta los dos sensores. El relé necesita <b>dos contactos NA</b>.</p></div>
+    <div class="card"><h3>Si los dos sensores detectan a la vez</h3><p>Puede pasar si una caja llega al tope mientras la anterior sigue en la mesa. Con Y1 y Y2 energizadas, la válvula no cambia: B termina de enviar la caja al paletizado y la nueva espera en el tope. Cuando la mesa queda libre, B2 se apaga, queda solo Y1 y el ciclo continúa.</p></div>
   </div>
 </section>
 
@@ -263,7 +263,6 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);paddin
       <tr><td class="m">A, B</td><td>Cilindro de simple efecto con retorno por muelle</td><td>2</td></tr>
       <tr><td class="m">V1</td><td>Electroválvula 5/2 biestable, bobinas Y1 y Y2 a 24 V DC</td><td>1</td></tr>
       <tr><td class="m">VR1, VR2</td><td>Válvula reguladora de caudal unidireccional</td><td>2</td></tr>
-      <tr><td class="m">—</td><td>Distribuidor en T y tapón para la vía 2</td><td>1 c/u</td></tr>
       <tr><td class="m">S1</td><td>Final de carrera, contacto NA, accionado a mano como pulsador de partida</td><td>1</td></tr>
       <tr><td class="m">K1</td><td>Relé 24 V DC con dos contactos NA</td><td>1</td></tr>
       <tr><td class="m">B1</td><td>Sensor de proximidad capacitivo PNP</td><td>1</td></tr>
@@ -271,15 +270,16 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);paddin
     </tbody>
   </table></div>
   <div class="grid2" style="margin-top:16px">
-    <div class="card"><h3>Antes de conectar</h3><ul>
-      <li>Revisa que la corriente de salida de los sensores, indicada en su placa, sea mayor que la que consume cada bobina. Si no alcanza, el sensor no logrará cambiar la válvula o puede dañarse.</li>
-      <li>Ubica B1 de modo que deje de detectar cuando el tablón sale de la cinta. Si sigue detectando con A y B extendidos, Y1 y Y2 quedan energizadas a la vez y la válvula no vuelve.</li>
-      <li>Ajusta B2 para que detecte la placa de acero solo al final de la carrera.</li>
+    <div class="card"><h3>Ajustes</h3><ul>
+      <li>Regula VR1 para que A avance más lento: así B alcanza a volver por su resorte antes de que la caja llegue a la mesa.</li>
+      <li>Ubica B1 solo en la posición del tope, para que no vea las cajas que vienen atrás.</li>
+      <li>Ubica B2 donde queda el fleje cuando la caja llega a la mesa.</li>
+      <li>La corriente de salida de cada sensor debe ser mayor que la que consume su bobina.</li>
     </ul></div>
     <div class="card warn"><h3>Parada y seguridad</h3><ul>
-      <li>Como el mando no tiene pulsador de paro, K1 se desactiva cortando la fuente de 24 V. Si la maleta tiene un pulsador NC, conéctalo en serie al comienzo de la línea 1.</li>
-      <li>Al cortar la energía, la válvula queda en su última posición: si los cilindros estaban extendidos, siguen extendidos hasta cortar el aire.</li>
-      <li>Descarga el aire con 0V1 antes de intervenir la estación.</li>
+      <li>El mando no tiene pulsador de paro: K1 se desactiva cortando los 24 V. Si la maleta tiene un pulsador NC, va en serie al comienzo de la línea 1.</li>
+      <li>Al cortar la energía, la válvula queda en su última posición.</li>
+      <li>Para discutir: ¿qué pasa si una caja llega a la mesa <b>sin fleje</b>? B2 no la detecta, la caja queda en la mesa y el operador debe retirarla antes de que llegue la siguiente.</li>
     </ul></div>
   </div>
 </section>
@@ -287,10 +287,10 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);paddin
 <section>
   <h2><span class="n">07</span>Montaje en la maleta y en FluidSIM</h2>
   <ol class="steps">
-    <li>Arma la parte neumática y prueba los dos cilindros con el accionamiento manual de la válvula.</li>
-    <li>Cablea las líneas 1 y 2: accionando S1 con la mano, K1 debe quedar retenido al soltarlo.</li>
-    <li>Cablea la línea 3: la salida de K1 alimenta el cable café (+24 V) de ambos sensores; el cable negro de B1 va a Y1 y el de B2 a Y2; los cables azules a 0 V.</li>
-    <li>Acerca un trozo de madera a B1: los cilindros deben avanzar. Acerca una pieza metálica a B2: deben retroceder.</li>
+    <li>Arma la parte neumática y prueba los cilindros con el accionamiento manual de la válvula: Y1 debe hacer avanzar A y Y2 debe hacer avanzar B.</li>
+    <li>Cablea las líneas 1 y 2: al accionar S1 con la mano, K1 debe quedar retenido al soltarlo.</li>
+    <li>Cablea la línea 3: la salida de K1 alimenta el cable café (+24 V) de ambos sensores; el negro de B1 va a Y1 y el de B2 a Y2; los azules a 0 V.</li>
+    <li>Acerca un trozo de cartón a B1: A debe avanzar y B retroceder. Acerca una pieza metálica a B2: B debe avanzar y A retroceder.</li>
     <li>Comprueba que sin K1 retenido ningún sensor mueve la válvula.</li>
   </ol>
 </section>
